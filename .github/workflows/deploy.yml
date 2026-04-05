@@ -1,0 +1,37 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            mkdir -p /var/www/re-presentation-app
+            cd /var/www/re-presentation-app
+            
+            # Simple direct git pull and build on server (if docker is not preferred yet)
+            # OR better: install docker and use compose
+            
+            if ! command -v docker &> /dev/null; then
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+            fi
+            
+            # Write env file
+            echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > .env
+            
+            # Pull image or rebuild (docker-compose approach is safer for data)
+            # For simplicity in this first step, we'll use a direct build
+            # but I'll provide a proper docker-compose separately

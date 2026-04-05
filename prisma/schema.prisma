@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Presentation {
+  id        String   @id @default(cuid())
+  name      String
+  data      Json     // This will store the entire state (offerData, areaData, etc.)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String?  // For future auth
+}
