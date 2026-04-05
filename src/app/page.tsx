@@ -1,65 +1,43 @@
-import Image from "next/image";
+'use client';
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Logo } from '@/components/Logo';
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-brand-navy flex flex-col items-center justify-center text-white p-6 relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
+        <svg fill="none" viewBox="0 0 400 400" className="w-[150%] h-[150%] absolute -top-1/4 -left-1/4 rotate-12">
+          <path d="M0 100 Q 100 50, 200 100 T 400 100" stroke="white" strokeWidth="1" />
+          <path d="M0 150 Q 100 100, 200 150 T 400 150" stroke="white" strokeWidth="1" />
+          <path d="M0 200 Q 100 150, 200 200 T 400 200" stroke="white" strokeWidth="1" />
+        </svg>
+      </div>
+
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8 }}
+        className="text-center z-10 flex flex-col items-center"
+      >
+        <Logo className="w-64 md:w-80 h-auto mb-12" color="#C5A059" />
+        <h1 className="text-4xl md:text-6xl font-serif mb-12">Presentations Generator</h1>
+        
+        <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
+          <Link href="/design-code" className="px-12 py-4 bg-brand-gold text-brand-navy font-sans font-bold hover:bg-white transition-all rounded-sm uppercase tracking-widest text-sm">
+            View Design Code
+          </Link>
+          <Link href="/presentation/demo" className="px-12 py-4 border border-white text-white font-sans hover:bg-white hover:text-brand-navy transition-all rounded-sm uppercase tracking-widest text-sm">
+            Mock Presentation
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </motion.div>
+
+      <div className="absolute bottom-10 text-brand-gold/50 font-sans text-xs tracking-widest">
+        PREMIUM REAL ESTATE SOLUTIONS
+      </div>
+    </main>
   );
 }
