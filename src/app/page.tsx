@@ -26,16 +26,21 @@ export default function Home() {
         <h1 className="text-4xl md:text-6xl font-serif mb-12">Presentations Generator</h1>
         
         <div className="flex flex-col md:flex-row gap-6 justify-center items-center">
-          <Link href="/editor" className="px-16 py-5 bg-brand-gold text-brand-navy font-sans font-black hover:bg-white transition-all rounded-sm uppercase tracking-[0.2em] text-sm shadow-2xl scale-110">
+          <Link href="/editor" className="px-16 py-5 bg-brand-gold text-brand-navy font-sans font-black hover:bg-white hover:scale-105 active:scale-95 transition-all rounded-sm uppercase tracking-[0.2em] text-sm shadow-2xl shadow-brand-gold/20">
             Open Editor
           </Link>
-          <div className="flex gap-4">
-            <Link href="/design-code" className="px-8 py-3 border border-white/30 text-white/70 font-sans hover:bg-white hover:text-brand-navy transition-all rounded-sm uppercase tracking-widest text-[10px]">
-              Design Code
+          <div className="flex flex-col gap-4">
+            <Link href="/dashboard" className="px-12 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-sans font-bold hover:bg-white hover:text-brand-navy hover:scale-105 active:scale-95 transition-all rounded-sm uppercase tracking-[0.2em] text-xs text-center">
+              Go to Dashboard
             </Link>
-            <Link href="/presentation/demo" className="px-8 py-3 border border-white/30 text-white/70 font-sans hover:bg-white hover:text-brand-navy transition-all rounded-sm uppercase tracking-widest text-[10px]">
-              Mock Demo
-            </Link>
+            <div className="flex gap-4">
+              <Link href="/design-code" className="px-8 py-3 border border-white/30 text-white/70 font-sans hover:bg-white hover:text-brand-navy transition-all rounded-sm uppercase tracking-widest text-[10px]">
+                Design Code
+              </Link>
+              <Link href="/presentation/demo" className="px-8 py-3 border border-white/30 text-white/70 font-sans hover:bg-white hover:text-brand-navy transition-all rounded-sm uppercase tracking-widest text-[10px]">
+                Mock Demo
+              </Link>
+            </div>
           </div>
         </div>
       </motion.div>

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
@@ -20,8 +20,14 @@ import {
   MapPin,
   Upload,
   X,
-  Loader2
+  Loader2,
+  Eye,
+  EyeOff,
+  LayoutDashboard,
+  Building2
 } from 'lucide-react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { PropertyOffer } from './PropertyOfferTemplate';
 import { AreaDetails, type AreaDetailsData } from './AreaDetailsTemplate';
@@ -98,6 +104,34 @@ const AMENITIES_PRESETS = [
   }
 ];
 
+// PREVENT SYSTEM OVERLOAD: Memoized Preview Component
+const SlidePreview = React.memo(({ id, offerData, areaData, advantagesData, advantages2Data, gallery1Data, unitData, contactData }: any) => {
+  return (
+    <div className="absolute inset-0 origin-top-left scale-[0.117] pointer-events-none select-none">
+       <div style={{ width: '1920px', height: '1080px' }}>
+          {id === 'offer-1' && <PropertyOffer data={offerData} />}
+          {id === 'area' && <AreaDetails data={areaData} />}
+          {id === 'advantages' && <ProjectAdvantages data={advantagesData} />}
+          {id === 'advantages-2' && <ProjectAdvantages data={advantages2Data} />}
+          {id === 'gallery-1' && <FullImageSlide data={gallery1Data} />}
+          {id === 'unit-1' && <UnitPlan data={unitData} />}
+          {id === 'contact-us' && <ContactUs data={contactData} />}
+       </div>
+    </div>
+  );
+}, (prev, next) => {
+  // Only re-render if data for this specific slide changed
+  if (prev.id !== next.id) return false;
+  if (prev.id === 'offer-1' && prev.offerData !== next.offerData) return false;
+  if (prev.id === 'area' && prev.areaData !== next.areaData) return false;
+  if (prev.id === 'advantages' && prev.advantagesData !== next.advantagesData) return false;
+  if (prev.id === 'advantages-2' && prev.advantages2Data !== next.advantages2Data) return false;
+  if (prev.id === 'gallery-1' && prev.gallery1Data !== next.gallery1Data) return false;
+  if (prev.id === 'unit-1' && prev.unitData !== next.unitData) return false;
+  if (prev.id === 'contact-us' && prev.contactData !== next.contactData) return false;
+  return true;
+});
+
 export default function EditorPage() {
   const [zoom, setZoom] = useState(0.5); // Initial zoom to fit screen
   const [activePage, setActivePage] = useState('offer-1');
@@ -111,41 +145,33 @@ export default function EditorPage() {
   }, []);
 
   const [offerData, setOfferData] = useState({
-    title: "1BR APARTMENTS IN HIGHBURY",
-    developer: "BY ELLINGTON",
-    location: "Sobha Hartland, Dubai",
-    initialPayment: "1 160 068",
-    roi: "6,6–7,1",
-    price: "1 860 000",
-    image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2071&auto=format&fit=crop",
+    title: "",
+    developer: "",
+    location: "",
+    initialPayment: "",
+    roi: "",
+    price: "",
+    image: "",
     specs: [
-      { label: "Size", value: "882.96" },
-      { label: "Floor", value: "Mid floor" },
-      { label: "View", value: "Overlooking villas and the landscaped community area" },
-      { label: "Unit type", value: "Corner apartment" },
+      { label: "Size", value: "" },
+      { label: "Floor", value: "" },
+      { label: "View", value: "" },
+      { label: "Unit type", value: "" },
     ],
-    features: [
-      "Elegant design with refined interior finishes",
-      "Ellington quality — with a pricing potential 20–30% higher than competitors upon handover",
-    ]
+    features: ["", ""]
   });
 
   const [areaData, setAreaData] = useState<AreaDetailsData>({
-    projectName: "HIGHBURY",
-    description: "Sobha Hartland in Dubai is a unique community that combines luxury and nature.",
-    points: [
-      "Prime location in the city near Al Maktoum bin Rashid Road",
-      "Convenient connectivity to hospitals, international schools, shopping and entertainment destinations",
-      "Close to Global Village and key cultural attractions",
-      "One of the most sought-after residential areas in Dubai"
-    ],
+    projectName: "",
+    description: "",
+    points: ["", "", "", ""],
     distances: [
-      { label: "Downtown Dubai / Burj Khalifa", time: "10 min" },
-      { label: "Dubai International Airport (DXB)", time: "15 min" },
-      { label: "Dubai Creek Harbour", time: "15 min" },
-      { label: "DIFC", time: "20 min" },
-      { label: "Palm Jumeirah", time: "25 min" },
-      { label: "Jumeirah Beach", time: "20 min" }
+      { label: "DUBAI MALL / BURJ KHALIFA", time: "" },
+      { label: "DXB INTERNATIONAL AIRPORT", time: "" },
+      { label: "PALM JUMEIRAH", time: "" },
+      { label: "BURJ AL ARAB", time: "" },
+      { label: "DOWNTOWN DUBAI", time: "" },
+      { label: "DUBAI MARINA", time: "" }
     ],
     mapImage: "/map_bg.png",
     pins: []
@@ -153,71 +179,43 @@ export default function EditorPage() {
 
   const [advantagesData, setAdvantagesData] = useState<ProjectAdvantagesData>({
     advantages: [
-      {
-        title: "GARDENS & WALKING AREAS",
-        description: "Landscaped gardens, open lounge areas, and a rooftop oasis with panoramic views",
-        image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1000"
-      },
-      {
-        title: "POOL & LEISURE AREAS",
-        description: "Swimming pool with lounge zones, BBQ areas, and open-air dining spaces",
-        image: "https://api.reelly.io/vault/ZZLvFZFt/Cmq-jOXP6-6x4IWQd-bgaNVA6jg/KH99KQ../25.webp"
-      },
-      {
-        title: "SPORTS & WELLNESS",
-        description: "Modern fitness center, yoga studio, padel court, and basketball court",
-        image: "https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=1000"
-      }
+      { title: "PRIME LOCATION", description: "", image: "" },
+      { title: "LIFESTYLE AMENITIES", description: "", image: "" },
+      { title: "INVESTMENT GROWTH", description: "" , image: "" }
     ]
   });
-
+ 
   const [advantages2Data, setAdvantages2Data] = useState<ProjectAdvantagesData>({
     advantages: [
-      {
-        title: "CHILDREN’S AREAS",
-        description: "Indoor playrooms and water play areas for kids",
-        image: "https://api.reelly.io/vault/ZZLvFZFt/Cmq-jOXP6-6x4IWQd-bgaNVA6jg/KH99KQ../26.webp"
-      },
-      {
-        title: "ADDITIONAL AMENITIES",
-        description: "Private cinema, EV charging stations, and a pet-friendly community",
-        image: "https://api.reelly.io/vault/ZZLvFZFt/Cmq-jOXP6-6x4IWQd-bgaNVA6jg/KH99KQ../27.webp"
-      }
+      { title: "PREMIUM FINISHING", description: "" , image: "" },
+      { title: "FLEXIBLE PAYMENT", description: "" , image: "" }
     ]
   });
 
   const [unitData, setUnitData] = useState<UnitDetailsData>({
-    title: "1BR LAYOUT",
-    image: "https://nbg1.your-objectstorage.com/foryou/unit-plans/medium/unit-plan-3f75a601-3cc3-45eb-9946-56e7efb6f031-a771fc37-068f-4824-af71-e69d576634eb.webp",
+    title: "",
+    image: "",
     specs: [
-      { label: "Internal Living Area", value: "703.21" },
-      { label: "Outdoor Living Area", value: "179.76" },
-      { label: "Total Living Area", value: "882.96" },
+      { label: "Internal Living Area", value: "" },
+      { label: "Outdoor Living Area", value: "" },
+      { label: "Total Living Area", value: "" },
     ]
   });
 
   const [gallery1Data, setGallery1Data] = useState<FullImageData>({
-    image: "https://api.reelly.io/vault/ZZLvFZFt/Cmq-jOXP6-6x4IWQd-bgaNVA6jg/KH99KQ../25.webp"
+    image: ""
   });
 
   const [contactData, setContactData] = useState<ContactUsData>({
     title: "CONTACT US",
     locations: [
-      { 
-        address: "Chistoprudny Boulevard 2, Entrance 3, 3rd Floor, Office 27, Moscow, Russia", 
-        image: "/map_left.png",
-        link: "https://yandex.com.tr/maps/213/moscow/?from=mapframe&ll=37.638217%2C55.764590&mode=usermaps&source=mapframe&um=constructor%3A8eec9e248547e9eff6604a7819d89f31657b8162c1ba93544fde1dd81099aa43&utm_source=mapframe&z=20"
-      },
-      { 
-        address: "Onyx Tower 2, Office 910, Dubai, UAE", 
-        image: "/map_right.png",
-        link: "https://www.google.com/maps/place/For+You+Real+Estate+LLC/@25.1045315,55.143361,14.01z/data=!4m6!3m5!1s0x3e5f6b9af5e19081:0xc1e7fbb235bd0e9a!8m2!3d25.096331!4d55.1688803!16s%2Fg%2F11y79xty1r?entry=ttu&g_ep=EgoyMDI1MDQwOC4wIKXMDSoASAFQAw%3D%3D"
-      }
+      { address: "EMAAR BEACHFRONT, DUBAI HARBOUR, DUBAI", image: "/map_left.png", link: "" },
+      { address: "ONE BY OMNIYAT, BUSINESS BAY, DUBAI", image: "/map_right.png", link: "" }
     ],
     websiteLabel: "VISIT WEBSITE",
-    websiteUrl: "EN.FORYOU-CB.COM",
+    websiteUrl: "https://presentation.foryou.ae",
     qrCode: "/qr_code.png",
-    qrLink: "https://en.foryou-cb.com/"
+    qrLink: "https://presentation.foryou.ae"
   });
 
   const [isMagicModalOpen, setIsMagicModalOpen] = useState(false);
@@ -244,11 +242,111 @@ export default function EditorPage() {
   });
   const [isTranslateModalOpen, setIsTranslateModalOpen] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [hiddenSlides, setHiddenSlides] = useState<string[]>([]);
+
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get('projectId');
+  const unitId = searchParams.get('unitId');
+  const [isSyncingProject, setIsSyncingProject] = useState(false);
+
+  // --- AUTOMATIC PROJECT DATA SYNC ---
+  useEffect(() => {
+    if (!projectId || !mounted) return;
+
+    const syncProjectData = async () => {
+      setIsSyncingProject(true);
+      try {
+        const res = await fetch(`/api/presentations-proxy/${projectId}`);
+        const data = await res.json();
+        
+        if (data.success && data.data) {
+          const project = data.data;
+          
+          // 1. Basic offer data
+          setOfferData({
+            title: project.name?.toUpperCase() || '',
+            developer: (project.developer?.name || project.developer || 'FOR YOU').toString().toUpperCase(),
+            location: (project.area?.nameEn || project.area || 'DUBAI').toString().toUpperCase(),
+            price: project.priceFromAED ? Math.round(project.priceFromAED).toLocaleString() : 'TBD',
+            image: project.photos?.[0] || "",
+            initialPayment: project.paymentPlans?.split('/')?.[0] || "20%",
+            roi: "8-12",
+            features: project.amenities?.slice(0, 3) || project.facilities?.slice(0, 3) || [],
+            specs: [
+              { label: "BEDROOMS", value: `${project.bedroomsFrom || 1} - ${project.bedroomsTo || 4}` },
+              { label: "SIZE FROM", value: project.sizeFromSqft ? `${Math.round(project.sizeFromSqft).toLocaleString()} SQFT` : 'TBD' },
+              { label: "COMPLETION", value: project.completionDate || project.plannedCompletionAt || 'TBD' }
+            ]
+          });
+
+          // 2. Area details
+          setAreaData(prev => ({
+            ...prev,
+            projectName: (project.name || '').toUpperCase(),
+            description: project.description || "",
+            points: project.amenities?.slice(0, 4) || project.facilities?.slice(0, 4) || []
+          }));
+
+          // 3. Advantages Sync
+          const amenities = project.amenities || project.facilities || [];
+          setAdvantagesData({
+              advantages: [
+                { title: "PRIME LOCATION", description: `Situated in the prestigious ${project.area?.nameEn || project.area || 'Dubai'} area with stunning views and elite neighborhood.`, image: project.photos?.[1] || "" },
+                { title: (amenities[0] || "LIFESTYLE AMENITIES").toString().toUpperCase(), description: `Offering premium ${amenities[0] || 'amenities'} for a comfortable and luxury living experience.`, image: project.photos?.[2] || "" },
+                { title: (amenities[1] || "INVESTMENT GROWTH").toString().toUpperCase(), description: "Excellent opportunity for capital appreciation and high rental yields in a growing district.", image: project.photos?.[3] || "" }
+              ]
+          });
+
+          // 4. Unit specific data
+          if (unitId && project.units) {
+             const unit = project.units.find((u: any) => u.id === unitId);
+             if (unit) {
+                setUnitData({
+                  title: `${unit.bedrooms} BR APARTMENT`,
+                  image: unit.planImage || (project.photos?.[project.photos.length - 1] || ""),
+                  specs: [
+                    { label: "Price", value: `${unit.price.toLocaleString()} AED` },
+                    { label: "Internal Living Area", value: `${unit.totalSize} sqft` },
+                    { label: "Total Living Area", value: `${unit.totalSize} sqft` }
+                  ]
+                });
+                setManualData(prev => ({
+                  ...prev,
+                  price: `${unit.price.toLocaleString()} AED`,
+                  rooms: `${unit.bedrooms} BR`,
+                  totalSize: `${unit.totalSize} sqft`
+                }));
+             }
+          } else if (project.units && project.units.length > 0) {
+            const unit = project.units[0];
+            setUnitData({
+              title: `${unit.bedrooms} BR APARTMENT`,
+              image: unit.planImage || (project.photos?.[project.photos.length - 1] || ""),
+              specs: [
+                { label: "Price", value: `${unit.price.toLocaleString()} AED` },
+                { label: "Internal Living Area", value: `${unit.totalSize} sqft` },
+                { label: "Total Living Area", value: `${unit.totalSize} sqft` }
+              ]
+            });
+          }
+
+          setMagicSourceText(`${project.name}\n${project.description}`);
+          console.log('Project detailed data synced:', project.name);
+        }
+      } catch (err) {
+        console.error('Project detail sync error:', err);
+      } finally {
+        setIsSyncingProject(false);
+      }
+    };
+
+    syncProjectData();
+  }, [projectId, unitId, mounted]);
 
   // --- LOCAL PERSISTENCE ---
   useEffect(() => {
     if (!mounted) return;
-    const saved = localStorage.getItem('re_presentation_state');
+    const saved = localStorage.getItem('re_presentation_state_v3');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -261,6 +359,7 @@ export default function EditorPage() {
         if (parsed.contactData) setContactData(parsed.contactData);
         if (parsed.versions) setVersions(parsed.versions);
         if (parsed.currentLang) setCurrentLang(parsed.currentLang);
+        if (parsed.hiddenSlides) setHiddenSlides(parsed.hiddenSlides);
         console.log('Restored from LocalStorage');
       } catch (e) {
         console.error('State restore failed', e);
@@ -268,29 +367,44 @@ export default function EditorPage() {
     }
   }, [mounted]);
 
+  // --- LOCAL PERSISTENCE & VERSION SYNC ---
   useEffect(() => {
     if (!mounted) return;
-    const stateToSave = {
-      offerData, areaData, advantagesData, advantages2Data, unitData, gallery1Data, contactData, versions, currentLang
-    };
-    localStorage.setItem('re_presentation_state', JSON.stringify(stateToSave));
-  }, [offerData, areaData, advantagesData, advantages2Data, unitData, gallery1Data, contactData, versions, currentLang, mounted]);
+    
+    // Use an AbortController to handle cleanup properly
+    const timeout = setTimeout(() => {
+      // 1. Check if versions actually need update
+      const currentVersion = versions[currentLang];
+      const hasChanged = !currentVersion || 
+        JSON.stringify(currentVersion.offerData) !== JSON.stringify(offerData) ||
+        JSON.stringify(currentVersion.areaData) !== JSON.stringify(areaData);
 
-  // Sync current state to the active version in the record
-  useEffect(() => {
-    setVersions(prev => ({
-      ...prev,
-      [currentLang]: {
-        offerData,
-        areaData,
-        advantagesData,
-        advantages2Data,
-        unitData,
-        contactData,
-        gallery1Data
+      if (hasChanged) {
+        setVersions(prev => ({
+          ...prev,
+          [currentLang]: {
+            offerData, areaData, advantagesData, advantages2Data, unitData, contactData, gallery1Data
+          }
+        }));
       }
-    }));
-  }, [offerData, areaData, advantagesData, advantages2Data, unitData, contactData, gallery1Data, currentLang]);
+
+      // 3. Save to localStorage
+      const stateToSave = {
+        offerData, areaData, advantagesData, advantages2Data, unitData, gallery1Data, contactData, 
+        currentLang, 
+        hiddenSlides
+      };
+      
+      try {
+        localStorage.setItem('re_presentation_state_v3', JSON.stringify(stateToSave));
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
+      }
+    }, 1500); // Increased debounce to 1.5s for stability
+
+    return () => clearTimeout(timeout);
+  }, [offerData, areaData, advantagesData, advantages2Data, unitData, gallery1Data, contactData, currentLang, hiddenSlides, mounted]);
+
 
   const switchLanguage = (langCode: string) => {
     const version = versions[langCode];
@@ -639,6 +753,32 @@ export default function EditorPage() {
 
   return (
     <div className={`h-screen w-full bg-[#E5E7EB] flex flex-col overflow-hidden font-sans ${isResizing ? 'select-none' : ''}`}>
+      {/* Project Sync Overlay */}
+      <AnimatePresence>
+        {isSyncingProject && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] bg-[#00183F]/80 backdrop-blur-md flex flex-col items-center justify-center text-white"
+          >
+             <div className="w-24 h-24 bg-white/10 rounded-[32px] flex items-center justify-center mb-8 border border-white/20">
+                <Building2 className="w-12 h-12 text-white animate-pulse" />
+             </div>
+             <div className="text-center space-y-4">
+                <h2 className="text-3xl font-serif italic tracking-wider">Syncing Project Data</h2>
+                <div className="flex flex-col items-center gap-2">
+                   <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-full border border-white/10">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">Accessing Real Estate Cloud</span>
+                   </div>
+                   <p className="text-white/40 text-[10px] uppercase tracking-widest font-bold">Please wait while we populate the slides...</p>
+                </div>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* AI Translate Modal */}
       <AnimatePresence>
         {isTranslateModalOpen && (
@@ -737,6 +877,11 @@ export default function EditorPage() {
           <h2 className="text-sm font-medium text-gray-500 uppercase tracking-widest">
             For You Presentation Manager
           </h2>
+          <div className="h-4 w-px bg-slate-200" />
+          <Link href="/dashboard" className="flex items-center gap-2 text-[10px] font-black text-slate-400 hover:text-[#002864] transition-all uppercase tracking-widest px-3 py-1.5 border border-slate-100 hover:border-[#002864]/20 rounded-lg bg-slate-50/50">
+            <LayoutDashboard className="w-3 h-3" />
+            Dashboard
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -803,44 +948,64 @@ export default function EditorPage() {
               { id: 'unit-1', label: 'Unit Plan 1' },
               { id: 'contact-us', label: 'Contact Us' },
             ].map((page) => (
-              <div key={page.id} className="group flex flex-col gap-3">
+              <div key={page.id} className="group/slide flex flex-col gap-3 relative">
                 <div className="flex items-center justify-between px-1">
-                  <span className={`text-[11px] font-bold tracking-tight uppercase ${
-                    activePage === page.id ? 'text-[#002864]' : 'text-gray-400'
-                  }`}>
-                    {page.label}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-bold tracking-tight uppercase ${
+                      activePage === page.id ? 'text-[#002864]' : 'text-gray-400'
+                    }`}>
+                      {page.label}
+                    </span>
+                    {hiddenSlides.includes(page.id) && (
+                      <span className="text-[9px] font-extrabold text-red-400 uppercase tracking-tighter bg-red-50 px-1 rounded">Hidden</span>
+                    )}
+                  </div>
                   <div className={`h-1 w-8 rounded-full transition-all duration-500 ${
                     activePage === page.id ? 'bg-[#002864] w-12' : 'bg-gray-200'
                   }`} />
                 </div>
 
-                <button 
-                  onClick={() => setActivePage(page.id)}
-                  className={`w-full relative aspect-video rounded-xl overflow-hidden transition-all duration-500 ease-out bg-white ${
-                    activePage === page.id 
-                    ? 'ring-2 ring-[#002864]/10 border border-[#002864] shadow-md scale-[1.03]' 
-                    : 'border border-gray-100 shadow-sm hover:border-[#002864]/20 hover:shadow-md hover:scale-[1.01]'
-                  }`}
-                >
-                  <div className="absolute inset-0 origin-top-left scale-[0.117] pointer-events-none select-none">
-                     <div style={{ width: '1920px', height: '1080px' }}>
-                        {page.id === 'offer-1' && <PropertyOffer data={offerData} />}
-                        {page.id === 'area' && <AreaDetails data={areaData} />}
-                        {page.id === 'advantages' && <ProjectAdvantages data={advantagesData} />}
-                        {page.id === 'advantages-2' && <ProjectAdvantages data={advantages2Data} />}
-                        {page.id === 'gallery-1' && <FullImageSlide data={gallery1Data} />}
-                        {page.id === 'unit-1' && <UnitPlan data={unitData} />}
-                        {page.id === 'contact-us' && <ContactUs data={contactData} />}
-                     </div>
-                  </div>
+                <div className="relative group">
+                  <button 
+                    onClick={() => setActivePage(page.id)}
+                    className={`w-full relative aspect-video rounded-xl overflow-hidden transition-all duration-500 ease-out bg-white ${
+                      activePage === page.id 
+                      ? 'ring-2 ring-[#002864]/10 border border-[#002864] shadow-md scale-[1.03]' 
+                      : 'border border-gray-100 shadow-sm hover:border-[#002864]/20 hover:shadow-md hover:scale-[1.01]'
+                    } ${hiddenSlides.includes(page.id) ? 'opacity-40 grayscale-[0.5]' : ''}`}
+                  >
+                    <SlidePreview 
+                      id={page.id}
+                      offerData={offerData}
+                      areaData={areaData}
+                      advantagesData={advantagesData}
+                      advantages2Data={advantages2Data}
+                      gallery1Data={gallery1Data}
+                      unitData={unitData}
+                      contactData={contactData}
+                    />
 
-                  {activePage === page.id && (
-                    <div className="absolute top-2 right-2 w-5 h-5 bg-[#002864] rounded-full flex items-center justify-center border-4 border-white shadow-lg z-30">
-                      <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                    </div>
-                  )}
-                </button>
+                    {activePage === page.id && !hiddenSlides.includes(page.id) && (
+                      <div className="absolute top-2 right-2 w-5 h-5 bg-[#002864] rounded-full flex items-center justify-center border-4 border-white shadow-lg z-30">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                      </div>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setHiddenSlides(prev => 
+                        prev.includes(page.id) ? prev.filter(p => p !== page.id) : [...prev, page.id]
+                      );
+                    }}
+                    className={`absolute top-2 left-2 p-2 rounded-full backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 z-40 ${
+                      hiddenSlides.includes(page.id) ? 'bg-red-500 text-white' : 'bg-white/90 text-[#002864]'
+                    } shadow-lg scale-90 hover:scale-100`}
+                  >
+                    {hiddenSlides.includes(page.id) ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -930,11 +1095,24 @@ export default function EditorPage() {
             <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-12 bg-gray-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity ${isResizing ? 'opacity-100 bg-[#002864]' : ''}`} />
           </div>
           
-          <div className="p-5 border-b border-gray-100 flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Type className="w-4 h-4 text-blue-600" />
+          <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Type className="w-4 h-4 text-blue-600" />
+              </div>
+              <span className="font-bold text-gray-700 tracking-tight uppercase text-xs tracking-widest">Content Editor</span>
             </div>
-            <span className="font-bold text-gray-700 tracking-tight">Content Editor</span>
+            <button 
+              onClick={() => {
+                if (confirm('Clear all data and start from scratch?')) {
+                  localStorage.removeItem('re_presentation_state_v3');
+                  window.location.reload();
+                }
+              }}
+              className="text-[9px] font-bold text-red-500 hover:bg-red-50 transition-colors uppercase tracking-widest border border-red-100 px-2 py-1 rounded-md"
+            >
+              Reset All
+            </button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-5 space-y-6">

@@ -3,14 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
 }
 
 model Presentation {
   id        String   @id @default(cuid())
   name      String
-  data      Json     // This will store the entire state (offerData, areaData, etc.)
+  data      String   // Using String for SQLite to store JSON stringified
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String?  // For future auth
