@@ -21,6 +21,8 @@ export async function GET(request: Request) {
     const queryParams = new URLSearchParams({
       page,
       limit,
+      perPage: limit,
+      per_page: limit,
       search,
       mode
     });
