@@ -263,10 +263,11 @@ export default function EditorPage() {
           const project = data.data;
           
           // 1. Basic offer data
+          const projectName = project.title?.en || project.name || '';
           setOfferData({
-            title: project.name?.toUpperCase() || '',
+            title: projectName.toUpperCase(),
             developer: (project.developer?.name || project.developer || 'FOR YOU').toString().toUpperCase(),
-            location: (project.area?.nameEn || project.area || 'DUBAI').toString().toUpperCase(),
+            location: (project.location || project.area?.nameEn || project.area || 'DUBAI').toString().toUpperCase(),
             price: project.priceFromAED ? Math.round(project.priceFromAED).toLocaleString() : 'TBD',
             image: project.photos?.[0] || "",
             initialPayment: project.paymentPlans?.split('/')?.[0] || "20%",
@@ -282,8 +283,8 @@ export default function EditorPage() {
           // 2. Area details
           setAreaData(prev => ({
             ...prev,
-            projectName: (project.name || '').toUpperCase(),
-            description: project.description || "",
+            projectName: (project.title?.en || project.name || '').toUpperCase(),
+            description: project.description?.en || project.description || "",
             points: project.amenities?.slice(0, 4) || project.facilities?.slice(0, 4) || []
           }));
 

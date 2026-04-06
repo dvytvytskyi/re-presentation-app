@@ -63,8 +63,8 @@ export default function DashboardPage() {
       const res = await fetch('/api/presentations-proxy?mode=lite&limit=500');
       const data = await res.json();
       if (data.success) {
-        // The new structure is data.data.data according to documentation
-        setProjects(data.data?.data || []);
+        // Updated structure: fallback to projects array
+        setProjects(data.data?.projects || data.data?.data || data.projects || []);
       }
     } catch (err) {
       console.error('Failed to fetch projects', err);
@@ -77,10 +77,19 @@ export default function DashboardPage() {
     fetchHistory();
   }, []);
 
-  const filteredProjects = projects.filter(p => 
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.area?.nameEn?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProjects = React.useMemo(() => {
+    if (!searchQuery.trim()) return projects;
+    return projects.filter((p: any) => {
+      const name = p.title?.en || p.name || '';
+      const dev = p.developer?.name || p.developer || '';
+      const area = p.location || p.area?.nameEn || '';
+      const searchLower = searchQuery.toLowerCase();
+      
+      return name.toLowerCase().includes(searchLower) || 
+             dev.toLowerCase().includes(searchLower) ||
+             area.toLowerCase().includes(searchLower);
+    });
+  }, [projects, searchQuery]);
 
   const handleGenerate = () => {
     if (!selectedProject) return;
@@ -261,13 +270,15 @@ export default function DashboardPage() {
                                         <Building2 className="w-5 h-5" />
                                      </div>
                                      <div>
-                                        <div className="text-sm font-bold">{project.name}</div>
+                                        <div className="text-sm font-bold truncate max-w-[400px]">
+                                          {project.title?.en || project.name || 'Untitled Project'}
+                                        </div>
                                         <div className={`text-[10px] font-bold uppercase tracking-tighter ${selectedProject?.id === project.id ? 'text-white/60' : 'text-slate-400'}`}>
-                                           {project.area?.nameEn || 'Dubai'} • {project.developer?.name || 'Developer'}
+                                           {project.location || project.area?.nameEn || 'Dubai'} • {project.developer?.name || project.developer || 'Developer'}
                                         </div>
                                      </div>
                                   </div>
-                                  <ChevronRight className={`w-5 h-5 transition-transform ${selectedProject?.id === project.id ? 'translate-x-1' : 'text-slate-200'}`} />
+                                  <ChevronRight className={`w-5 h-5 transition-transform shrink-0 ${selectedProject?.id === project.id ? 'translate-x-1' : 'text-slate-200'}`} />
                                </button>
                             ))
                          ) : (
