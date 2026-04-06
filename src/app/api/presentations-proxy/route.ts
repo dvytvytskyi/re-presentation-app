@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   
   // USE DIRECT IP TO BYPASS VERCEL DNS ISSUES
   const BE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://135.181.201.185/api'}/property-finder/projects`;
+  console.log(`[DEBUG_PROXY] BE_URL: ${BE_URL}`);
   const isLite = mode === 'lite';
 
   try {
