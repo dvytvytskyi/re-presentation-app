@@ -23,9 +23,11 @@ export const FullImageSlide: React.FC<FullImageProps> = ({ data }) => {
         />
       </div>
 
-      {/* FOOTER */}
-      <div className="relative z-10 pt-[30px] pb-[10px] flex justify-center w-full">
-        <Logo color="#F3F3F3" className="w-[180px] h-auto opacity-100" />
+      {/* FOOTER LOGO */}
+      <div className="absolute bottom-[40px] left-0 right-0 flex justify-center z-10 pointer-events-none">
+        <div className="font-serif text-[#F3F3F3] text-[52px] opacity-20 uppercase tracking-[0.2em] leading-none">
+          FOR YOU
+        </div>
       </div>
     </div>
   );

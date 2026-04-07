@@ -113,9 +113,9 @@ export function AreaDetails({
            </div>
         </div>
 
-        {/* Footer Logo - Fixed distance from bottom */}
-        <div className="absolute bottom-[25px] left-[110px]">
-          <div className="font-serif text-[#F3F3F3] text-[52px] opacity-40 uppercase tracking-widest leading-none">
+        {/* FOOTER LOGO */}
+        <div className="absolute bottom-[40px] left-0 right-0 flex justify-center z-10 pointer-events-none">
+          <div className="font-serif text-[#F3F3F3] text-[52px] opacity-20 uppercase tracking-[0.2em] leading-none">
             FOR YOU
           </div>
         </div>

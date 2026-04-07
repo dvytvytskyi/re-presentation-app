@@ -113,7 +113,7 @@ export function ProjectAdvantages({ data }: { data: ProjectAdvantagesData }) {
       </div>
 
       {/* FOOTER LOGO */}
-      <div className="absolute bottom-[35px] left-0 right-0 flex justify-center z-10">
+      <div className="absolute bottom-[40px] left-0 right-0 flex justify-center z-10 pointer-events-none">
         <div className="font-serif text-[#F3F3F3] text-[52px] opacity-20 uppercase tracking-[0.2em] leading-none">
           FOR YOU
         </div>

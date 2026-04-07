@@ -130,7 +130,7 @@ export function PropertyOffer({ data }: { data: PropertyOfferData }) {
                   WebkitTextFillColor: 'transparent',
                   maxWidth: '700px'
                 }}>
-                  {spec.label}: {spec.value}{spec.label === 'Size' ? ' sq. ft.' : ''}
+                  {spec.label}: {spec.value}{(spec.label.toLowerCase().includes('size') || spec.label.toLowerCase().includes('площад') || spec.label.toLowerCase().includes('площ') || spec.label.toLowerCase().includes('розмір')) ? ' sq. ft.' : ''}
                 </p>
               </div>
             ))}
@@ -147,7 +147,7 @@ export function PropertyOffer({ data }: { data: PropertyOfferData }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Property Features:
+              {data.location?.match(/[а-яА-Я]/) ? 'О квартире:' : 'Property Features:'}
             </p>
             <div className="space-y-3" style={{ marginBottom: '51.5px' }}>
               {data.features.map((feature, i) => (
@@ -190,9 +190,9 @@ export function PropertyOffer({ data }: { data: PropertyOfferData }) {
           </div>
         </div>
 
-        {/* Footer Logo - Fixed distance from bottom */}
-        <div className="absolute bottom-[25px] left-[110px]">
-          <div className="font-serif text-[#F3F3F3] text-[52px] opacity-40 uppercase tracking-widest leading-none">
+        {/* FOOTER LOGO */}
+        <div className="absolute bottom-[40px] left-0 right-0 flex justify-center z-10 pointer-events-none">
+          <div className="font-serif text-[#F3F3F3] text-[52px] opacity-20 uppercase tracking-[0.2em] leading-none">
             FOR YOU
           </div>
         </div>

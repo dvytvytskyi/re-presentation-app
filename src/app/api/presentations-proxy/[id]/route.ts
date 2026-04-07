@@ -4,7 +4,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
+  const { id } = await params;
   const apiKey = process.env.BE_API_KEY || 'fyr_9881b745cf45c2a381a6a3ed8b7532948baa894e1dc13fe958b747248506acc0';
   const apiSecret = process.env.BE_API_SECRET || '60d7187b772dea78eb1c42fc4ee50657ec720ed517ce950f0d9eab9286cad5f6c52c72a3e8de7233fdaf5923c3c0756360a7663a463d095e2ca17d43d1ee6e54';
   const baseUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://135.181.201.185/api'}/property-finder/projects`;
