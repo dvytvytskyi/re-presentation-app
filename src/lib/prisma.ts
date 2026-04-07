@@ -3,6 +3,11 @@ import "dotenv/config";
 
 const prismaClientSingleton = () => {
   try {
+    // Only initialize Prisma if DATABASE_URL is available (prevents build crashes)
+    if (!process.env.DATABASE_URL) {
+      console.warn('Prisma build warning: DATABASE_URL not found, returning placeholder.');
+      return null as any;
+    }
     return new PrismaClient();
   } catch (err) {
     console.error('PrismaClient failed to initialize:', err);
