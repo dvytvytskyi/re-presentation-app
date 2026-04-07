@@ -28,7 +28,17 @@ const getPrisma = () => {
   return globalForPrisma.prisma;
 };
 
-const prisma = getPrisma();
+// Truly lazy initialization
+const prisma: PrismaClientSingleton = new Proxy({} as PrismaClientSingleton, {
+  get: (target, prop) => {
+    const p = getPrisma();
+    if (!p) {
+        // Fallback for build time if DATABASE_URL is missing
+        return undefined;
+    }
+    return (p as any)[prop];
+  }
+});
 
 export default prisma;
 
