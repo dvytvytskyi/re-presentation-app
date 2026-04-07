@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
   const apiKey = process.env.BE_API_KEY || 'fyr_9881b745cf45c2a381a6a3ed8b7532948baa894e1dc13fe958b747248506acc0';

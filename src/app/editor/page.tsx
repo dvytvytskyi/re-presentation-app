@@ -154,7 +154,7 @@ const SlidePreview = React.memo(({ id, offerData, areaData, advantagesData, adva
   return true;
 });
 
-export default function EditorPage() {
+function EditorContent() {
   const router = useRouter();
   const [zoom, setZoom] = useState(0.5); // Initial zoom to fit screen
   const [activePage, setActivePage] = useState('offer-1');
@@ -2573,5 +2573,17 @@ export default function EditorPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function EditorPage() {
+  return (
+    <React.Suspense fallback={
+       <div className="flex h-screen w-screen items-center justify-center bg-[#002864] text-white">
+          <Loader2 className="w-8 h-8 animate-spin" />
+       </div>
+    }>
+      <EditorContent />
+    </React.Suspense>
   );
 }
