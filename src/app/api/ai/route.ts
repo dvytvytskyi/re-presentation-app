@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 function revertTranslations(text: string): string {
   const mapping: Record<string, string> = {
     "Даунтаун Дубай": "Downtown Dubai",
